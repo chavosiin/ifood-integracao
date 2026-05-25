@@ -1,5 +1,6 @@
 ORIGENS_PERMITIDAS = [
-    "http://localhost:5173"
+    "http://localhost:5173",
+    "http://10.10.9.12"
 ]
 
 FILIAIS_ATIVAS = [

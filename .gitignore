@@ -1,6 +1,20 @@
-node_modules/
+# Python
 venv/
-.env
-dist/
 __pycache__/
 *.pyc
+
+# Node
+node_modules/
+dist/
+
+# Environment
+.env
+
+# Linux
+*.log
+
+# VSCode
+.vscode/
+
+# Build
+build/

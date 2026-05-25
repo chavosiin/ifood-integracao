@@ -1,21 +1,30 @@
 import { useState } from "react"
 import { useNavigate } from "react-router-dom"
+import api from "../services/api"
 
 function Login() {
   const [usuario, setUsuario] = useState("")
   const [senha, setSenha] = useState("")
+  const [erro, setErro] = useState("")
   const navigate = useNavigate()
 
-  function entrar(event) {
+  async function entrar(event) {
     event.preventDefault()
+    setErro("")
 
-    if (usuario === "admin" && senha === "123") {
-      localStorage.setItem("usuarioLogado", "Luiz Fernando")
-      localStorage.setItem("perfilUsuario", "Administrador")
+    try {
+      const response = await api.post("/auth/login", {
+        usuario,
+        senha
+      })
+
+      localStorage.setItem("token", response.data.access_token)
+      localStorage.setItem("usuarioLogado", response.data.usuario.nome)
+      localStorage.setItem("perfilUsuario", response.data.usuario.perfil)
 
       navigate("/")
-    } else {
-      alert("Usuário ou senha inválidos")
+    } catch (error) {
+      setErro("Usuário ou senha inválidos")
     }
   }
 
@@ -24,6 +33,12 @@ function Login() {
       <form className="login-card" onSubmit={entrar}>
         <h1>iFood ERP</h1>
         <p>Acesse o painel de integração</p>
+
+        {erro && (
+          <div className="error-box">
+            {erro}
+          </div>
+        )}
 
         <label>Usuário</label>
         <input
@@ -41,7 +56,9 @@ function Login() {
           placeholder="Digite sua senha"
         />
 
-        <button type="submit">Entrar</button>
+        <button type="submit">
+          Entrar
+        </button>
       </form>
     </div>
   )

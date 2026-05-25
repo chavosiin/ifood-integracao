@@ -2,24 +2,34 @@ from fastapi import APIRouter, WebSocket, WebSocketDisconnect
 
 router = APIRouter()
 
-clientes_websocket = []
+clientes_conectados = []
+
 
 @router.websocket("/ws/pedidos")
 async def websocket_pedidos(websocket: WebSocket):
+
     await websocket.accept()
-    clientes_websocket.append(websocket)
+
+    clientes_conectados.append(websocket)
 
     try:
+
         while True:
+
             await websocket.receive_text()
 
     except WebSocketDisconnect:
-        clientes_websocket.remove(websocket)
+
+        clientes_conectados.remove(websocket)
 
 
-async def avisar_clientes_novo_pedido():
-    for cliente in clientes_websocket:
-        await cliente.send_json({
-            "tipo": "NOVO_PEDIDO",
-            "mensagem": "Novo pedido recebido"
-        })
+async def notificar_novo_pedido(mensagem: str):
+
+    for cliente in clientes_conectados:
+
+        try:
+
+            await cliente.send_text(mensagem)
+
+        except:
+            pass
